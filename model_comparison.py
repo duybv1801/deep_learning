@@ -141,20 +141,21 @@ class TraditionalCF:
         pass
 
 # Usage example for comparison
-def run_model_comparison(ncf_model, train_loader, test_loader):
+def run_model_comparison(best_model, train_loader, test_loader):
     """Run comprehensive model comparison"""
     
     # Initialize comparison
     comparison = ModelComparison()
     
-    # Add NCF model
+    # Add best model (could be NCF, NeuMF, etc.)
+    model_name = best_model.__class__.__name__
     comparison.add_model(
-        name="NCF",
-        model=ncf_model,
-        description="Neural Collaborative Filtering with deep learning"
+        name=model_name,
+        model=best_model,
+        description=f"Best performing model: {model_name}"
     )
     
-    # Add traditional CF
+    # Add traditional CF for baseline comparison
     traditional_cf = TraditionalCF(train_loader)
     comparison.add_model(
         name="Traditional_CF",
@@ -163,6 +164,43 @@ def run_model_comparison(ncf_model, train_loader, test_loader):
     )
     
     # Compare models
+    results = comparison.compare_models(test_loader, K=5)
+    
+    return results, comparison
+
+def run_architecture_comparison(ncf_model, neumf_model, neumf_shared_model, train_loader, test_loader):
+    """Compare different neural architectures"""
+    
+    comparison = ModelComparison()
+    
+    # Add all neural models
+    comparison.add_model(
+        name="NCF_MLP",
+        model=ncf_model,
+        description="MLP-only Neural Collaborative Filtering"
+    )
+    
+    comparison.add_model(
+        name="NeuMF_Separate",
+        model=neumf_model,
+        description="Neural Matrix Factorization with separate embeddings (GMF + MLP)"
+    )
+    
+    comparison.add_model(
+        name="NeuMF_Shared",
+        model=neumf_shared_model,
+        description="Neural Matrix Factorization with shared embeddings (GMF + MLP)"
+    )
+    
+    # Add traditional baseline
+    traditional_cf = TraditionalCF(train_loader)
+    comparison.add_model(
+        name="Traditional_CF",
+        model=traditional_cf,
+        description="Traditional Collaborative Filtering baseline"
+    )
+    
+    # Compare all models
     results = comparison.compare_models(test_loader, K=5)
     
     return results, comparison

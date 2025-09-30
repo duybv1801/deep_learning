@@ -1,7 +1,7 @@
 {
-  "created_at": "2025-09-29T08:26:25.456059",
+  "created_at": "2025-09-30T11:42:09.358892",
   "num_users": 9709,
-  "num_items": 13010,
+  "num_items": 12995,
   "model_type": "NCF",
   "version": "1.0"
 }
